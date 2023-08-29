@@ -2,13 +2,11 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by LaunchCode
@@ -75,7 +73,7 @@ public class JobData {
 
             String aValue = row.get(column);
 
-            if (aValue.contains(value)) {
+            if (aValue.toLowerCase().contains(value.toLowerCase())) {
                 jobs.add(row);
             }
         }
@@ -90,12 +88,24 @@ public class JobData {
      * @return      List of all jobs with at least one field containing the value
      */
     public static ArrayList<HashMap<String, String>> findByValue(String value) {
-
         // load data, if not already loaded
         loadData();
-
-        // TODO - implement this method
-        return null;
+        ArrayList<HashMap<String, String>> jobsWithAnyMatch = new ArrayList<>();
+        for (HashMap<String, String> job : allJobs) {
+            for (Map.Entry<String, String> entry : job.entrySet()) {
+                String fieldValue = entry.getValue();
+                if (fieldValue.toLowerCase().contains(value.toLowerCase())) {
+                    jobsWithAnyMatch.add(job);
+                    break;
+                }
+            }
+        }
+        if (!jobsWithAnyMatch.isEmpty()) {
+            return jobsWithAnyMatch;
+        } else {
+            System.out.println("No results");
+            return null;
+        }
     }
 
     /**
